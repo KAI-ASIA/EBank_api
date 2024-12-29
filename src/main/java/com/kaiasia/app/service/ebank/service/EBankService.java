@@ -36,7 +36,7 @@ public class EBankService {
         ApiBody body = req.getBody();
 
         if (body == null) {
-            return apiErrorUtils.getError("804", new String[]{"Body is required"});
+            return apiErrorUtils.getError("804", new String[]{"Body"});
         }
 
         ApiHeader header = req.getHeader();
@@ -47,8 +47,7 @@ public class EBankService {
         String userID = "";
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            eBankReq = objectMapper.readValue((String) body.get("enquiry"), EBankReq.class);
+            eBankReq = Mapper.fromJson((String) body.get("enquiry"), EBankReq.class);
             sessionId = eBankReq != null ? eBankReq.getSessionId() : null;
             userID = eBankReq != null ? eBankReq.getUserID() : null;
             location = System.currentTimeMillis() + "-" + chanel + "-" + userID;
@@ -58,11 +57,11 @@ public class EBankService {
         }
 
         if (StringUtils.isBlank(sessionId)) {
-            return apiErrorUtils.getError("804", new String[]{"sessionId is required"});
+            return apiErrorUtils.getError("804", new String[]{"sessionId"});
         }
 
         if (StringUtils.isBlank(userID)) {
-            return apiErrorUtils.getError("804", new String[]{"userID is required"});
+            return apiErrorUtils.getError("804", new String[]{"userID"});
         }
 
         return new ApiError(ApiError.OK_CODE, ApiError.OK_DESC);
