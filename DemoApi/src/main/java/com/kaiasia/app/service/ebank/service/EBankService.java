@@ -24,6 +24,11 @@ public class EBankService {
 
     @KaiMethod(name = "EBankService", type = Register.VALIDATE)
     public ApiError validate(ApiRequest req){
+        ApiBody body = req.getBody();
+//        Object field = body.get("enquiry");
+        Map<String , Object> field = (Map<String, Object>) body.get("enquiry");
+        String sessionId = (String) field.get("sessionId");
+        if(sessionId == null && sessionId.isEmpty())
         return new ApiError(ApiError.OK_CODE, ApiError.OK_DESC);
     }
 
