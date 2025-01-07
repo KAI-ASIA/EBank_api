@@ -1,14 +1,14 @@
 package com.kaiasia.app.service.resetpassword;
 
-import com.kaiasia.app.core.model.ApiBody;
-import com.kaiasia.app.core.model.ApiError;
-import com.kaiasia.app.core.model.ApiRequest;
-import com.kaiasia.app.core.model.ApiResponse;
 import com.kaiasia.app.core.utils.GetErrorUtils;
 import com.kaiasia.app.register.KaiMethod;
 import com.kaiasia.app.register.KaiService;
 import com.kaiasia.app.register.Register;
 import lombok.extern.slf4j.Slf4j;
+import ms.apiclient.model.ApiBody;
+import ms.apiclient.model.ApiError;
+import ms.apiclient.model.ApiRequest;
+import ms.apiclient.model.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @KaiService

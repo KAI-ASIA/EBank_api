@@ -1,7 +1,6 @@
 package com.kaiasia.app.core.dao;
 
 import com.kaiasia.app.core.model.ApiRequestBean;
-import com.kaiasia.app.core.model.ApiResponse;
 import com.kaiasia.app.core.model.ApiResponseBean;
 
 import java.util.List;

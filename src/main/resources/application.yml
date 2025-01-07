@@ -1,22 +1,31 @@
 server:
   servlet:
-    contextPath: /CUSTINFO_API
+    contextPath: /EBANK_API
   port: 8077
 kai:
-  name: CUSTINFO_API
+  name: EBANK_API
   key: custinfoq51klfoni1ezxl5f2ckpfx671
   threadName: DEMO_API
   pollSize: 100
   error:
-    code999: "Internal Server Error {0}"
-    code998: "Timeout {0}"
-    code701: "API not exist"
-    code700: "API key not exists"
-    code803: "RequestId not exist"
-    code996: "Error insert request to DB#{0}"
-    code804: "Field {0} is required"
-    code500: "Internal Server Error"
-    code600: "Failed to process JSON"
+      code996: "Error insert request to DB#{0}"
+      code997: "Cannot be processed"
+      code998: "Timeout {0}"
+      code999: "Internal Server Error {0}"
+      code801: "Request type not valid"
+      code802: "Problem with calculating timeout or sendtime in request type 'response'"
+      code803: "RequestId not exist"
+      code804: "Request lacks valid information: {0}"
+      code805: "Problem with command in request type 'request'"
+      code700: "API key not exists"
+      code701: "API not exist"
+      code600: "Problem in mapper object"
+      code501: "Failed to insert to the database#{0}"
+      code502: "Failed to update to the database#{0}"
+      code503: "Failed to read from the database#{0}"
+      code504: "Failed to delete from the database#{0}"
+      code505: "Failed to call api#{0}"
+      code333: "Don't have method validate for AuthenType"
 spring:
   application:
     name: KAIASIA_DEMO
@@ -24,16 +33,40 @@ spring:
     postgres: true
   postgredatasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://14.225.254.212:5432/KAI?currentSchema=for_test
-    username: for_test
-    password: for_test@2024
+    url: jdbc:postgresql://14.225.254.212:5432/KAI_API?currentSchema=ebank_api
+    username: ebank_api
+    password: ebank@kaiasia
     maximum-pool-size: 50
     idleTimeout: 120000
     minimumIdle: 10
   jpa:
     show-sql: false
     open-in-view: false
+  redis:
+    host: 14.225.254.212
+    port: 6379
+    connect-timeout:
+    timeout: 3000
 
 dbinfo:
   apiRequest: request_in
   apiResponse: request_out
+
+dep-api:
+  authApi:
+    apiName: AUTH_API
+    url: http://localhost:8059/AUTH_API/process
+    timeout: 60000
+    apiKey: authq51klfoni1ezxl5f2ckpfx248
+  t24utilsApi:
+    apiName: T24_UTIL_API
+    url: http://14.225.254.212:8080/T24_UTIL_API/process
+    timeout: 60000
+    apiKey: VDI0X1VUSUxfQVBJ
+
+logging:
+  file:
+    name: logging.log
+  level:
+    root: info
+
