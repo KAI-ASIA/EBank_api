@@ -103,52 +103,52 @@ public class EBankService {
 
 
         // call t24
-        T24UserInfoResponse t24UserInfoResponse =  null;
-        try{
-            t24UserInfoResponse =  t24UtilClient.getUserInfo(
-                    location,
-                    T24Request
-                            .builder()
-//                            .username(authTakeSessionResponse.getUsername())
-                            .username("28169200")
-                            .build(),
-                    req.getHeader()
-            );
-        }catch (Exception e){
-            throw new Exception();
-        }
-
-        if(t24UserInfoResponse.getError() != null){
-            log.error("Error processing at " + location,t24UserInfoResponse.getError().toString());
-            apiResponse.setError(t24UserInfoResponse.getError());
-            return apiResponse;
-        }
-
-
-
-        HashMap<String , Object> field = new HashMap<>();
-        field.put("customerID",t24UserInfoResponse.getCustomerId());
-        field.put("responseCode","00");
-        field.put("customerType",t24UserInfoResponse.getCustomerType());
-        field.put("company",t24UserInfoResponse.getCompany());
-        field.put("nationality","VN");
-        field.put("phone",t24UserInfoResponse.getPhone());
-        field.put("email",t24UserInfoResponse.getEmail());
-        field.put("mainAccount",t24UserInfoResponse.getMainAccount());
-        field.put("name",t24UserInfoResponse.getName());
-        field.put("trustedType","SMS");
-        field.put("lang",t24UserInfoResponse.getLanguage());
-        field.put("startDate","----");
-        field.put("endDate","----");
-        field.put("pwDate",t24UserInfoResponse.getPwDate());
-        field.put("userLock","NO");
-        field.put("packAge","SUPPER");
-        field.put("userStatus",t24UserInfoResponse.getUserStatus());
-
-        header.setReqType("RESPONE");
-        body.put("enquiry",field);
-        apiResponse.setBody(body);
-        return apiResponse;
+//        T24UserInfoResponse t24UserInfoResponse =  null;
+//        try{
+//            t24UserInfoResponse =  t24UtilClient.getUserInfo(
+//                    location,
+//                    T24Request
+//                            .builder()
+////                            .username(authTakeSessionResponse.getUsername())
+//                            .username("28169200")
+//                            .build(),
+//                    req.getHeader()
+//            );
+//        }catch (Exception e){
+//            throw new Exception();
+//        }
+//
+//        if(t24UserInfoResponse.getError() != null){
+//            log.error("Error processing at " + location,t24UserInfoResponse.getError().toString());
+//            apiResponse.setError(t24UserInfoResponse.getError());
+//            return apiResponse;
+//        }
+//
+//
+//
+//        HashMap<String , Object> field = new HashMap<>();
+//        field.put("customerID",t24UserInfoResponse.getCustomerId());
+//        field.put("responseCode","00");
+//        field.put("customerType",t24UserInfoResponse.getCustomerType());
+//        field.put("company",t24UserInfoResponse.getCompany());
+//        field.put("nationality","VN");
+//        field.put("phone",t24UserInfoResponse.getPhone());
+//        field.put("email",t24UserInfoResponse.getEmail());
+//        field.put("mainAccount",t24UserInfoResponse.getMainAccount());
+//        field.put("name",t24UserInfoResponse.getName());
+//        field.put("trustedType","SMS");
+//        field.put("lang",t24UserInfoResponse.getLanguage());
+//        field.put("startDate","----");
+//        field.put("endDate","----");
+//        field.put("pwDate",t24UserInfoResponse.getPwDate());
+//        field.put("userLock","NO");
+//        field.put("packAge","SUPPER");
+//        field.put("userStatus",t24UserInfoResponse.getUserStatus());
+//
+//        header.setReqType("RESPONE");
+//        body.put("enquiry",field);
+//        apiResponse.setBody(body);
+//        return apiResponse;
 
 //        DepApiPropeties AuthProperties = depAipConfig.getApiProperties("authApi");
 //        ApiRequest auth1Req = new ApiRequest();
