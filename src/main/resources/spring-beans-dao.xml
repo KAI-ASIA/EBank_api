@@ -19,4 +19,10 @@
 		<property name="apiRequestDao" ref="apiRequestDAO" />
 		<property name="apiResponseDAO" ref="apiResponseDAO" />
 	</bean>
+	<bean id="t24UtilClient" class="ms.apiclient.t24util.T24UtilClient">
+		<property name="url" value="${dep-api.t24utilsApi.url}" />
+		<property name="apiKey" value="${dep-api.t24utilsApi.apiKey}" />
+		<property name="apiName" value="${dep-api.t24utilsApi.apiName}" />
+		<property name="apiTimeout" value="${dep-api.t24utilsApi.timeout}" />
+	</bean>
 </beans>
