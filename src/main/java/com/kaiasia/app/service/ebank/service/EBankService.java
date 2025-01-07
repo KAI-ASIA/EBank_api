@@ -1,6 +1,5 @@
 package com.kaiasia.app.service.ebank.service;
 
-import com.kaiasia.app.core.model.*;
 import com.kaiasia.app.core.utils.GetErrorUtils;
 import com.kaiasia.app.register.KaiMethod;
 import com.kaiasia.app.register.KaiService;
