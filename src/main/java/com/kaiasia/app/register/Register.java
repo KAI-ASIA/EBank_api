@@ -1,7 +1,7 @@
 package com.kaiasia.app.register;
 
 
-import com.kaiasia.app.core.model.ApiRequest;
+import ms.apiclient.model.ApiRequest;
 
 import java.util.LinkedHashMap;
 

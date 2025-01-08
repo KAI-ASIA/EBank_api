@@ -1,6 +1,6 @@
 package com.kaiasia.app.core.utils;
 
-import com.kaiasia.app.core.model.ApiError;
+import ms.apiclient.model.ApiError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
