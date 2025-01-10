@@ -11,6 +11,7 @@ import ms.apiclient.authen.AuthRequest;
 import ms.apiclient.authen.AuthTakeSessionResponse;
 import ms.apiclient.authen.AuthenClient;
 import ms.apiclient.model.*;
+import ms.apiclient.t24util.T24CustomerInfoResponse;
 import ms.apiclient.t24util.T24Request;
 import ms.apiclient.t24util.T24UserInfoResponse;
 import ms.apiclient.t24util.T24UtilClient;
@@ -83,42 +84,37 @@ public class EBankService {
 
         String location = time + "-" + chanel + "-" + eBankReq.getUserID();
 
-        String key = "EBank" + eBankReq.getSessionId() + "-" + eBankReq.getUserID()+ "-" + time;
+        String key = "EBank" + eBankReq.getSessionId() + "-" + eBankReq.getUserID();
 
         log.info(location + "#BEGIN GET CACHE");
         // get cache
-        ApiResponse getCache = getCache(key);
-        if (getCache != null){
-            log.info("cache get user info :{}",key);
-            log.info(location + "#END GET CACHE");
-            return getCache;
+        ApiResponse cache = getCache(key);
+        if (cache != null){
+            log.info(location + "#GET CACHE SUCCESSFULLY");
+            return cache;
         }
         log.info(key + "#CACHE MISSING");
 
-        log.info(location + "#BEGIN CALL SESSION");
-        //take session
-        AuthTakeSessionResponse authTakeSessionResponse = null;
-        try{
-             authTakeSessionResponse = authenClient.takeSession(
-                    location,
-                    AuthRequest
-                            .builder()
-                            .sessionId(eBankReq.getSessionId())
-                            .build(),
-                    req.getHeader()
-            );
-        }catch (RestClientException e) {
-            ApiError error = apiErrorUtils.getError("505",new String[]{e.getMessage()});
-            apiResponse.setError(error);
-            return apiResponse;
-        }
+//        log.info(location + "#BEGIN CALL SESSION");
+//        //take session
+//        AuthTakeSessionResponse authTakeSessionResponse = null;
+//        try{
+//             authTakeSessionResponse = authenClient.takeSession(
+//                    location,
+//                    AuthRequest
+//                            .builder()
+////                            .sessionId(eBankReq.getSessionId())
+//                            .sessionId("158963500-20170110135803-1484031483542")
+//                            .build(),
+//                    req.getHeader()
+//            );
+//        }catch (RestClientException e) {
+//            ApiError error = apiErrorUtils.getError("505",new String[]{e.getMessage()});
+//            apiResponse.setError(error);
+//            return apiResponse;
+//        }
+//
 
-        if( !ApiError.OK_CODE.equals(authTakeSessionResponse.getError().getCode())){
-            ApiError apiError = new ApiError(authTakeSessionResponse.getError().getCode(),authTakeSessionResponse.getError().getDesc());
-            apiResponse.setError(apiError);
-            log.info(location + "#END CALL SESSION" + (System.currentTimeMillis() - time));
-            return apiResponse;
-        }
 
         // call t24
         log.info(location + "#BEGIN CALL USER INFO");
@@ -133,36 +129,50 @@ public class EBankService {
                 req.getHeader()
         );
 
-        if(!ApiError.OK_CODE.equals(t24UserInfoResponse.getError().getCode())){
+        if(t24UserInfoResponse.getError() != null){
             ApiError apiError = new ApiError(t24UserInfoResponse.getError().getCode(),t24UserInfoResponse.getError().getDesc());
             apiResponse.setError(apiError);
             log.info(location + "#END CALL USER INFO" + (System.currentTimeMillis() - time));
             return apiResponse;
         }
 
-//        if(t24UserInfoResponse.getError() != null){
-//            log.error("Error processing at " + location,t24UserInfoResponse.getError().toString());
-//            apiResponse.setError(t24UserInfoResponse.getError());
-//            return apiResponse;
-//        }
+        log.info(location + "#BEGIN CALL CUSTOMER INFO");
+
+        T24CustomerInfoResponse t24CustomerInfoResponse = t24UtilClient.getCustomerInfo(
+                location,
+                T24Request
+                        .builder()
+                        .customerId(t24UserInfoResponse.getCustomerId())
+                        .build(),
+                req.getHeader()
+        );
+
+        if(t24CustomerInfoResponse.getError() != null){
+            ApiError apiError = new ApiError(t24CustomerInfoResponse.getError().getCode(),t24CustomerInfoResponse.getError().getDesc());
+            apiResponse.setError(apiError);
+            log.info(location + "#END CALL CUSTOMER INFO" + (System.currentTimeMillis() - time));
+            return apiResponse;
+        }
+
+
 
         HashMap<String , Object> field = new HashMap<>();
         field.put("customerID",t24UserInfoResponse.getCustomerId());
         field.put("responseCode","00");
         field.put("customerType",t24UserInfoResponse.getCustomerType());
         field.put("company",t24UserInfoResponse.getCompany());
-        field.put("nationality","VN");
+        field.put("nationality",t24CustomerInfoResponse.getCountry());
         field.put("phone",t24UserInfoResponse.getPhone());
         field.put("email",t24UserInfoResponse.getEmail());
         field.put("mainAccount",t24UserInfoResponse.getMainAccount());
         field.put("name",t24UserInfoResponse.getName());
-        field.put("trustedType","SMS");
+        field.put("trustedType","---");
         field.put("lang",t24UserInfoResponse.getLanguage());
         field.put("startDate","----");
         field.put("endDate","----");
         field.put("pwDate",t24UserInfoResponse.getPwDate());
-        field.put("userLock","NO");
-        field.put("packAge","SUPPER");
+        field.put("userLock","---");
+        field.put("packAge","---");
         field.put("userStatus",t24UserInfoResponse.getUserStatus());
 
         header.setReqType("RESPONE");
