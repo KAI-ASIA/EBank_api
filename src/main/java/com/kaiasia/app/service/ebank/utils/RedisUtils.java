@@ -39,7 +39,7 @@ public class RedisUtils {
     }
 
     public void setTimeToLive(String key ,ApiResponse apiResponse, long time){
-        redisTemplate.opsForValue().set(key,apiResponse,time, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key,apiResponse,time, TimeUnit.MINUTES);
         log.info("Save {} in cache }",key);
     }
 }

@@ -47,7 +47,7 @@ spring:
     host: 14.225.254.212
     port: 6379
     timeout: 3000
-    ttl: 30000
+    ttl: 30
 
 dbinfo:
   apiRequest: request_in
@@ -64,10 +64,3 @@ dep-api:
     url: http://14.225.254.212:8080/T24_UTIL_API/process
     timeout: 60000
     apiKey: VDI0X1VUSUxfQVBJ
-
-logging:
-  file:
-    name: logging.log
-  level:
-    root: info
-
