@@ -6,6 +6,7 @@ import com.kaiasia.app.register.KaiService;
 import com.kaiasia.app.register.Register;
 import com.kaiasia.app.service.ebank.model.EBankReq;
 import com.kaiasia.app.service.ebank.utils.Mapper;
+import com.kaiasia.app.service.ebank.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import ms.apiclient.authen.AuthRequest;
 import ms.apiclient.authen.AuthTakeSessionResponse;
@@ -44,7 +45,7 @@ public class EBankService {
     private AuthenClient authenClient;
 
     @Autowired
-    private RedisTemplate<String , Object> redisTemplate;
+    private RedisUtils redisUtils;
 
     @KaiMethod(name = "getUSER_PROFILE", type = Register.VALIDATE)
     public ApiError validate(ApiRequest req)  {
@@ -88,7 +89,7 @@ public class EBankService {
 
         log.info(location + "#BEGIN GET CACHE");
         // get cache
-        ApiResponse cache = getCache(key);
+        ApiResponse cache = redisUtils.getCache(key);
         if (cache != null){
             log.info(location + "#GET CACHE SUCCESSFULLY");
             return cache;
@@ -116,7 +117,7 @@ public class EBankService {
 //
 
 
-        // call t24
+        // call t24 ebank
         log.info(location + "#BEGIN CALL USER INFO");
 
         T24UserInfoResponse t24UserInfoResponse =  t24UtilClient.getUserInfo(
@@ -124,7 +125,7 @@ public class EBankService {
                 T24Request
                         .builder()
 //                            .username(authTakeSessionResponse.getUsername())
-                        .username("28169200")
+                        .username(eBankReq.getUserID())
                         .build(),
                 req.getHeader()
         );
@@ -179,34 +180,8 @@ public class EBankService {
         body.put("enquiry",field);
         apiResponse.setBody(body);
 
-        setTimeToLive(key,apiResponse,ttl);
+        redisUtils.setTimeToLive(key,apiResponse,ttl);
 
         return apiResponse;
-    }
-
-    public ApiResponse getCache(String key){
-        if(key == null || key.trim().isEmpty()){
-            log.info("invalid key :{}",key);
-            return null;
-        }
-
-        try{
-            Object cache = redisTemplate.opsForValue().get(key);
-            if(cache != null){
-                log.info("cache get User info :{}", key);
-                return (ApiResponse) cache;
-            }else {
-                log.info("Cache miss for key: {}", key);
-            }
-        }catch (Exception e){
-            log.info("Redis error :{}",e.getMessage());
-        }
-
-        return  null;
-    }
-
-    public void setTimeToLive(String key ,ApiResponse apiResponse, long time){
-        redisTemplate.opsForValue().set(key,apiResponse,time,TimeUnit.SECONDS);
-        log.info("Save {} in cache }",key);
     }
 }
