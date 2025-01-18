@@ -25,4 +25,11 @@
 		<property name="apiName" value="${dep-api.t24utilsApi.apiName}" />
 		<property name="apiTimeout" value="${dep-api.t24utilsApi.timeout}" />
 	</bean>
+	<bean id="authenClient" class="ms.apiclient.authen.AuthenClient">
+		<property name="url" value="${dep-api.authApi.url}"/>
+		<property name="apiKey" value="${dep-api.authApi.apiKey}"/>
+		<property name="apiName" value="${dep-api.authApi.apiName}"/>
+		<property name="apiTimeout" value="${dep-api.authApi.timeout}"/>
+	</bean>
+
 </beans>

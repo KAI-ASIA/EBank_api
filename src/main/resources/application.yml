@@ -12,7 +12,7 @@ kai:
       code997: "Cannot be processed"
       code998: "Timeout {0}"
       code999: "Internal Server Error {0}"
-      code801: "Request type not valid"
+#      code801: "Request type not valid"
       code802: "Problem with calculating timeout or sendtime in request type 'response'"
       code803: "RequestId not exist"
       code804: "Request lacks valid information: {0}"
@@ -56,7 +56,7 @@ dbinfo:
 dep-api:
   authApi:
     apiName: AUTH_API
-    url: http://localhost:8059/AUTH_API/process
+    url: http://14.225.254.212:8087/AUTH_API/process
     timeout: 60000
     apiKey: authq51klfoni1ezxl5f2ckpfx248
   t24utilsApi:
