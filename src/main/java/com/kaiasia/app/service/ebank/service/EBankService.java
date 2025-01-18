@@ -48,22 +48,21 @@ public class EBankService {
     private RedisUtils redisUtils;
 
     @KaiMethod(name = "getUSER_PROFILE", type = Register.VALIDATE)
-    public ApiError validate(ApiRequest req)  {
+    public ApiError validate(ApiRequest req) throws Exception  {
+
         ApiBody body = req.getBody();
 
         if (body == null) {
             return  apiErrorUtils.getError("804", new String[]{"Body"});
         }
 
-        Map<String ,Object> field = (Map<String, Object>) req.getBody().get("enquiry");
-        String sessionId = (String) field.get("sessionId");
-        String userID = (String) field.get("userID");
+        EBankReq eBankReq = Mapper.fromObject(req.getBody().get("enquiry"),EBankReq.class);
 
-        if (StringUtils.isBlank(sessionId)) {
+        if (StringUtils.isBlank(eBankReq.getSessionId())) {
             return apiErrorUtils.getError("804", new String[]{"sessionId"});
         }
 
-        if (StringUtils.isBlank(userID)) {
+        if (StringUtils.isBlank(eBankReq.getUserID())) {
             return apiErrorUtils.getError("804", new String[]{"userID"});
         }
 
@@ -96,26 +95,22 @@ public class EBankService {
         }
         log.info(key + "#CACHE MISSING");
 
-//        log.info(location + "#BEGIN CALL SESSION");
-//        //take session
-//        AuthTakeSessionResponse authTakeSessionResponse = null;
-//        try{
-//             authTakeSessionResponse = authenClient.takeSession(
-//                    location,
-//                    AuthRequest
-//                            .builder()
-////                            .sessionId(eBankReq.getSessionId())
-//                            .sessionId("158963500-20170110135803-1484031483542")
-//                            .build(),
-//                    req.getHeader()
-//            );
-//        }catch (RestClientException e) {
-//            ApiError error = apiErrorUtils.getError("505",new String[]{e.getMessage()});
-//            apiResponse.setError(error);
-//            return apiResponse;
-//        }
-//
+        log.info(location + "#BEGIN CALL SESSION");
+        //take session
+        AuthTakeSessionResponse authTakeSessionResponse = authenClient.takeSession(
+                    location,
+                    AuthRequest
+                            .builder()
+                            .sessionId(eBankReq.getSessionId())
+                            .build(),
+                    req.getHeader()
+             );
 
+        if(authTakeSessionResponse.getError() != null && !ApiError.OK_CODE.equals(authTakeSessionResponse.getError().getCode())){
+            apiResponse.setError(authTakeSessionResponse.getError());
+            log.info(location + "#END CALL SESSION" + (System.currentTimeMillis() - time) + "ERROR - {}",authTakeSessionResponse.getError());
+            return apiResponse;
+        }
 
         // call t24 ebank
         log.info(location + "#BEGIN CALL USER INFO");
@@ -124,7 +119,6 @@ public class EBankService {
                 location,
                 T24Request
                         .builder()
-//                            .username(authTakeSessionResponse.getUsername())
                         .username(eBankReq.getUserID())
                         .build(),
                 req.getHeader()
@@ -137,8 +131,8 @@ public class EBankService {
             return apiResponse;
         }
 
-        log.info(location + "#BEGIN CALL CUSTOMER INFO");
 
+        log.info(location + "#BEGIN CALL CUSTOMER INFO");
         T24CustomerInfoResponse t24CustomerInfoResponse = t24UtilClient.getCustomerInfo(
                 location,
                 T24Request
